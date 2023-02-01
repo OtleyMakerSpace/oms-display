@@ -14,6 +14,17 @@ Document:
 - how to connect
 - how to edit the image list
 
+## Startup
+
+in file `~/.config/autostart/oms-display.desktop`
+
+```
+[Desktop Entry]
+Type=Application
+Name=oms-display
+Exec=/home/pi/oms-display.sh
+```
+
 To investigate:
 - DPMI blanking
 - automate the list of images
