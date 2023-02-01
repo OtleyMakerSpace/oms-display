@@ -9,63 +9,65 @@ import time
 import datetime
 from tkinter import *
 
-on_hours = ['08','09','10','11','12','13','14','15','16','17','18','19','20','21']
-slides = []
+on_hours = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
 slide_time = 10
 
 ##### function definitions ####
 
-def during_the_day():
-    # loop that runs forever
-    while True:
-        # gets the current hour of the time
-        the_hour = datetime.datetime.now().strftime('%H')
-        # checks if current hour is an hour the display is on
-        if the_hour in on_hours:
-            # loops through slide list and puts each image on screen
-            for slide in slides:
-                # changes the slide image in the label 
-                label.config(image=slide)
-                # updates tkinter 
-                root.update_idletasks()
-                root.update()
-                # pauses before next slide 
+
+def day_time():
+    hour = datetime.datetime.now().hour
+    return hour in on_hours
+
+
+def night_time():
+    return not day_time()
+
+
+def midnight():
+    hour = datetime.datetime.now().hour
+    min = datetime.datetime.now().minute
+    return hour == 0 and min == 0
+
+
+def show_slide(slide):
+    # changes the slide image in the label
+    label.config(image=slide)
+    # updates tkinter
+    root.update_idletasks()
+    root.update()
+
+
+def during_the_day(slides):
+    while day_time():
+        for slide in slides:
+            if day_time():
+                show_slide(slide)
                 time.sleep(slide_time)
-        # the current hour is when display is off
-        else:
-            # swaps to night time display
-            during_the_night()
+
+
+def reboot():
+    time.sleep(60)
+    os.system('sudo reboot')
+
 
 def during_the_night():
-    # defines a variable to track changes to black slide
-    showing_black_slide = False
-    # loop that runs forever
-    while True:
-        # gets the current hour and minute of the time
-        the_hour = datetime.datetime.now().strftime('%H')
-        the_min = datetime.datetime.now().strftime('%M')
-        # checks if it is midnight
-        if the_hour == '00' and the_min == '00':
-            # reboots the computer
-            time.sleep(60)
-            os.system('sudo reboot')
-        # checks if current hour is an hour the display is on
-        if the_hour in on_hours:
-            # swaps to daytime display
-            during_the_day()
-        # checks if the slide is not black yet
-        if not showing_black_slide:
-            # changes the slide image in the label to all black
-            label.config(image=slide_black)
-            # updates tkinter 
-            root.update_idletasks()
-            root.update()
-            # changes state of the tracker variable
-            showing_black_slide = True
-        # pauses before next slide 
-        time.sleep(50)
+
+    blanked = False
+    show_slide(slide_black)
+
+    while night_time():
+        if midnight():
+            reboot()
+        if not blanked:
+            # blank the display
+            blanked = True
+        time.sleep(10)
+
+    # unblank the display
 
 #### tkinter setup ####
+
 
 # creates the application window and makes it full screen
 root = Tk()
@@ -83,15 +85,17 @@ label = Label(frame)
 label.pack()
 
 # loads the slide images
-slides.append(PhotoImage(file = 'slide_1.png'))
-slides.append(PhotoImage(file = 'slide_2.png'))
-slides.append(PhotoImage(file = 'slide_3.png'))
-slides.append(PhotoImage(file = 'slide_4.png'))
-slides.append(PhotoImage(file = 'slide_5.png'))
+slides = []
+slides.append(PhotoImage(file='slide_1.png'))
+slides.append(PhotoImage(file='slide_2.png'))
+slides.append(PhotoImage(file='slide_3.png'))
+slides.append(PhotoImage(file='slide_4.png'))
+slides.append(PhotoImage(file='slide_5.png'))
 
 # loads the black slide
-slide_black = PhotoImage(file = 'slide_black.png')
+slide_black = PhotoImage(file='slide_black.png')
 
 #### main programme ####
-
-during_the_night()
+while True:
+    during_the_day(slides)
+    during_the_night()
