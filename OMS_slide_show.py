@@ -1,18 +1,21 @@
 #!/usr/bin/env python
 
-##### OMS Slide Show System ####
-
-##### imports and variables ####
-
 import os
 import time
 import datetime
 from tkinter import *
+import configparser
 
+# read settings from config file
+config = configparser.ConfigParser()
+config.read("settings.ini")
+settings = config["settings"]
+enable_blanking = settings.getboolean("enable blanking", True)
+slide_time = settings.getint("slide time", 10)
+
+# globals
 on_hours = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
-slide_time = 10
-
-##### function definitions ####
+blanked = False
 
 
 def day_time():
@@ -38,12 +41,20 @@ def show_slide(slide):
     root.update()
 
 
-def during_the_day(slides):
-    while day_time():
-        for slide in slides:
-            if day_time():
-                show_slide(slide)
-                time.sleep(slide_time)
+def blank_display():
+    if enable_blanking:
+        global blanked
+        if not blanked:
+            # blank the display
+            blanked = True
+
+
+def show_display():
+    if enable_blanking:
+        global blanked
+        if blanked:
+            # show the display
+            blanked = False
 
 
 def reboot():
@@ -51,20 +62,22 @@ def reboot():
     os.system('sudo reboot')
 
 
+def during_the_day(slides):
+    while day_time():
+        for slide in slides:
+            if day_time():
+                show_display()
+                show_slide(slide)
+                time.sleep(slide_time)
+
+
 def during_the_night():
-
-    blanked = False
     show_slide(slide_black)
-
     while night_time():
+        blank_display()
         if midnight():
             reboot()
-        if not blanked:
-            # blank the display
-            blanked = True
         time.sleep(10)
-
-    # unblank the display
 
 #### tkinter setup ####
 
