@@ -26,8 +26,8 @@ blanked = False
 def day_time():
     hour = datetime.datetime.now().hour
     if start_hour < end_hour:
-        return hour <= start_hour and hour < end_hour
-    return hour <= start_hour or hour < end_hour
+        return hour >= start_hour and hour < end_hour
+    return hour >= start_hour or hour < end_hour
 
 
 def night_time():
