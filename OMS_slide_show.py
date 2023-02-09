@@ -12,15 +12,22 @@ config.read("settings.ini")
 settings = config["settings"]
 enable_blanking = settings.getboolean("enable blanking", True)
 slide_time = settings.getint("slide time", 10)
+start_hour = settings.getint("start hour", 8)
+if start_hour < 0 or start_hour > 23:
+    raise Exception("start hour must be in the range 0 to 23")
+end_hour = settings.getint("end hour", 22)
+if end_hour < 0 or end_hour > 23:
+    raise Exception("end hour must be in the range 0 to 23")
 
 # globals
-on_hours = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
 blanked = False
 
 
 def day_time():
     hour = datetime.datetime.now().hour
-    return hour in on_hours
+    if start_hour < end_hour:
+        return hour <= start_hour and hour < end_hour
+    return hour <= start_hour or hour < end_hour
 
 
 def night_time():
