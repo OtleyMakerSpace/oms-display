@@ -2,17 +2,15 @@
 
 Displays a slide show of images during the day. Blanks the screen at night.
 
-Image file names are currently hard-coded, 5 images, but easy to add/remove images.
+Image file names are currently hard-coded, 5 images, and requires modifying the Python code to change.
+
+The Raspberry Pi reboots at midnight.
 
 ---
 
 Hostname: `display-pi`
 
 GitHub repository: https://github.com/DavidFrankland/oms-display
-
-Document:
-- how to connect
-- how to edit the image list
 
 ## Startup
 
@@ -31,24 +29,32 @@ in file `~/oms-display/settings.ini`
 
 ```
 [settings]
-
-# whether to switch off the display hardware for blanking the screen
 enable blanking = true
-
-# how long (in seconds) each slide is displayed
 slide time = 10
-
-# the start hour, when slides will begin to be displayed (0-23)
-# the start hour can be after the end hour, if you want a display that runs after midnight
 start hour = 8
-
-# the end hour, when a blank screen will be shown (0-23)
 end hour = 22
 ```
 
-To investigate:
-- DPMI blanking
+**enable blanking** (true/false): Whether to switch off the display during the blank period. If this is set, the display will enter a standby mode to save power.
+
+**slide time**: How long (in seconds) each slide is displayed.
+
+**start hour** (0-23): The hour of the day when slides will begin to be displayed, e.g. setting this to `8` will start the slide show at 8:00.
+
+**end hour** (0-23): The hour of the day when the slide show stops and a blank screen is displayed, e.g. setting this to `22` will end the slide show at 22:00.
+
+It is possible to set the start hour later than the end hour if you would like a display that runs beyond midnight, e.g. setting the start hour to `22` and the end hour to `2` will display the slide show from 22:00 to 2:00.
+
+## To do
+
+Document:
+- how to connect
+- how to edit the image list
+
+Investigate:
+- DPMI blanking ([see here](https://raspberrypi.stackexchange.com/questions/59898/how-can-i-blank-the-screen-from-the-command-line-over-ssh))
 - automate the list of images
+- display different images for Wharfedale Men's Shed on Mondays
 - samba share (need to be able to refresh the images)
-- animation effects
-- intelligent resize
+- animation effects ([GL Transitions](https://gl-transitions.com/)?)
+- intelligent resize/zoom
