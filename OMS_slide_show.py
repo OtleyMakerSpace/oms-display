@@ -18,6 +18,7 @@ if start_hour < 0 or start_hour > 23:
 end_hour = settings.getint("end hour", 22)
 if end_hour < 0 or end_hour > 23:
     raise Exception("end hour must be in the range 0 to 23")
+images_folder = settings.get("images folder")
 
 # globals
 blanked = False
@@ -105,12 +106,9 @@ label = Label(frame)
 label.pack()
 
 # loads the slide images
-slides = []
-slides.append(PhotoImage(file='slide_1.png'))
-slides.append(PhotoImage(file='slide_2.png'))
-slides.append(PhotoImage(file='slide_3.png'))
-slides.append(PhotoImage(file='slide_4.png'))
-slides.append(PhotoImage(file='slide_5.png'))
+slide_filenames = os.listdir(images_folder)
+slide_filenames.sort()
+slides = [PhotoImage(file=os.path.join(images_folder,f)) for f in slide_filenames]
 
 # loads the black slide
 slide_black = PhotoImage(file='slide_black.png')

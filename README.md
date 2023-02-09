@@ -33,6 +33,7 @@ enable blanking = true
 slide time = 10
 start hour = 8
 end hour = 22
+images folder = images
 ```
 
 **enable blanking** (true/false): Whether to switch off the display during the blank period. If this is set, the display will enter a standby mode to save power.
@@ -45,6 +46,8 @@ end hour = 22
 
 It is possible to set the start hour later than the end hour if you would like a display that runs beyond midnight, e.g. setting the start hour to `22` and the end hour to `2` will display the slide show from 22:00 to 2:00.
 
+**images folder**: The folder where the images are stored. Ensure that only image files are in here. The files in this folder will be displayed in the order of their filenames (sorted alphabetically).
+
 ## To do
 
 Document:
@@ -53,7 +56,6 @@ Document:
 
 Investigate:
 - DPMI blanking ([see here](https://raspberrypi.stackexchange.com/questions/59898/how-can-i-blank-the-screen-from-the-command-line-over-ssh))
-- automate the list of images
 - display different images for Wharfedale Men's Shed on Mondays
 - samba share (need to be able to refresh the images)
 - animation effects ([GL Transitions](https://gl-transitions.com/)?)
