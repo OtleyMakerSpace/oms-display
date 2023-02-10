@@ -2,9 +2,7 @@
 
 Displays a slide show of images during the day. Blanks the screen at night.
 
-Image file names are currently hard-coded, 5 images, and requires modifying the Python code to change.
-
-The Raspberry Pi reboots at midnight.
+The slide show runs on a Raspberry Pi, which reboots at midnight.
 
 ---
 
@@ -46,13 +44,12 @@ images-folder = images
 
 It is possible to set the start hour later than the end hour if you would like a display that runs beyond midnight, e.g. setting the start hour to `22` and the end hour to `2` will display the slide show from 22:00 to 2:00.
 
-**images-folder**: The folder where the images are stored. Ensure that only image files are in here. The files in this folder will be displayed in the order of their filenames (sorted alphabetically).
+**images-folder**: The folder where the images are stored. Ensure that only image files are in here. The images in this folder will be displayed in the order of their filenames (sorted alphabetically).
 
 ## To do
 
 Document:
 - how to connect
-- how to edit the image list
 
 Investigate:
 - DPMI blanking ([see here](https://raspberrypi.stackexchange.com/questions/59898/how-can-i-blank-the-screen-from-the-command-line-over-ssh))
