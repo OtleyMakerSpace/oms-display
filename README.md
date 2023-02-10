@@ -25,28 +25,28 @@ Exec=/home/pi/oms-display.sh
 
 ## Configuration
 
-in file `~/oms-display/settings.ini`
+Settings are stored in the file `~/oms-display/settings.ini`. An example looks like:
 
 ```
 [settings]
-enable blanking = true
-slide time = 10
-start hour = 8
-end hour = 22
-images folder = images
+enable-blanking = true
+slide-time = 10
+start-hour = 8
+end-hour = 22
+images-folder = images
 ```
 
-**enable blanking** (true/false): Whether to switch off the display during the blank period. If this is set, the display will enter a standby mode to save power.
+**enable-blanking** (true/false): Whether to switch off the display during the blank period. If this is set, the display will enter a standby mode to save power.
 
-**slide time**: How long (in seconds) each slide is displayed.
+**slide-time**: How long (in seconds) each slide is displayed.
 
-**start hour** (0-23): The hour of the day when slides will begin to be displayed, e.g. setting this to `8` will start the slide show at 8:00.
+**start-hour** (0-23): The hour of the day when slides will begin to be displayed, e.g. setting this to `8` will start the slide show at 8:00.
 
-**end hour** (0-23): The hour of the day when the slide show stops and a blank screen is displayed, e.g. setting this to `22` will end the slide show at 22:00.
+**end-hour** (0-23): The hour of the day when the slide show stops and a blank screen is displayed, e.g. setting this to `22` will end the slide show at 22:00.
 
 It is possible to set the start hour later than the end hour if you would like a display that runs beyond midnight, e.g. setting the start hour to `22` and the end hour to `2` will display the slide show from 22:00 to 2:00.
 
-**images folder**: The folder where the images are stored. Ensure that only image files are in here. The files in this folder will be displayed in the order of their filenames (sorted alphabetically).
+**images-folder**: The folder where the images are stored. Ensure that only image files are in here. The files in this folder will be displayed in the order of their filenames (sorted alphabetically).
 
 ## To do
 

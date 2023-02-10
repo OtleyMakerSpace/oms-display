@@ -10,15 +10,15 @@ import configparser
 config = configparser.ConfigParser()
 config.read("settings.ini")
 settings = config["settings"]
-enable_blanking = settings.getboolean("enable blanking", True)
-slide_time = settings.getint("slide time", 10)
-start_hour = settings.getint("start hour", 8)
+enable_blanking = settings.getboolean("enable-blanking", True)
+slide_time = settings.getint("slide-time", 10)
+start_hour = settings.getint("start-hour", 8)
 if start_hour < 0 or start_hour > 23:
     raise Exception("start hour must be in the range 0 to 23")
-end_hour = settings.getint("end hour", 22)
+end_hour = settings.getint("end-hour", 22)
 if end_hour < 0 or end_hour > 23:
     raise Exception("end hour must be in the range 0 to 23")
-images_folder = settings.get("images folder")
+images_folder = settings.get("images-folder")
 
 # globals
 blanked = False
