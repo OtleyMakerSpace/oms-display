@@ -50,6 +50,7 @@ It is possible to set the start hour later than the end hour if you would like a
 
 Document:
 - how to connect
+- image file format (1680x1050, PGM, PPM, GIF, PNG format)
 
 Investigate:
 - DPMI blanking ([see here](https://raspberrypi.stackexchange.com/questions/59898/how-can-i-blank-the-screen-from-the-command-line-over-ssh))
