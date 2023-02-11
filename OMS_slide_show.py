@@ -14,24 +14,24 @@ logger = logging.getLogger()
 logger.info("starting up")
 
 # read settings from config file
-logging.info("reading config settngs")
+logger.info("reading config settngs")
 config = configparser.ConfigParser()
 config.read("settings.ini")
 settings = config["settings"]
 enable_blanking = settings.getboolean("enable-blanking", True)
-logging.debug(f"enable_blanking = {enable_blanking}")
+logger.debug(f"enable_blanking = {enable_blanking}")
 slide_time = settings.getint("slide-time", 10)
-logging.debug(f"slide_time = {slide_time}")
+logger.debug(f"slide_time = {slide_time}")
 start_hour = settings.getint("start-hour", 8)
 if start_hour < 0 or start_hour > 23:
     raise Exception("start hour must be in the range 0 to 23")
-logging.debug(f"start_hour = {start_hour}")
+logger.debug(f"start_hour = {start_hour}")
 end_hour = settings.getint("end-hour", 22)
 if end_hour < 0 or end_hour > 23:
     raise Exception("end hour must be in the range 0 to 23")
-logging.debug(f"end_hour = {end_hour}")
+logger.debug(f"end_hour = {end_hour}")
 images_folder = settings.get("images-folder")
-logging.debug(f"images_folder = {images_folder}")
+logger.debug(f"images_folder = {images_folder}")
 
 
 # globals
@@ -126,7 +126,7 @@ slide_filenames = os.listdir(images_folder)
 slide_filenames.sort()
 slides = [PhotoImage(file=os.path.join(images_folder, f))
           for f in slide_filenames]
-logging.info(f"loaded {len(slides)} slides")
+logger.info(f"loaded {len(slides)} slides")
 
 
 # load the black slide
