@@ -30,8 +30,10 @@ end_hour = settings.getint("end-hour", 22)
 if end_hour < 0 or end_hour > 23:
     raise Exception("end hour must be in the range 0 to 23")
 logger.debug(f"end_hour = {end_hour}")
-images_folder = settings.get("images-folder")
-logger.debug(f"images_folder = {images_folder}")
+oms_images_folder = settings["oms-images_folder"]
+logger.debug(f"oms_images_folder = {oms_images_folder}")
+wms_images_folder = settings.get("wms-images-folder")
+logger.debug(f"wms_images_folder = {wms_images_folder}")
 
 
 # globals
@@ -103,6 +105,25 @@ def during_the_night():
             reboot()
         time.sleep(10)
 
+
+def today_slides():
+    is_monday = datetime.datetime.now().weekday() == 0
+    is_monday=True
+    if is_monday:
+        logger.info("using the WMS images")
+        images_folder = wms_images_folder
+    else:
+        logger.info("using the OMS images")
+        images_folder = oms_images_folder
+    logger.info(f"images_folder = {images_folder}")
+    slide_filenames = os.listdir(images_folder)
+    slide_filenames.sort()
+    slides = [PhotoImage(file=os.path.join(images_folder, f))
+              for f in slide_filenames]
+    logger.info(f"loaded {len(slides)} slides")
+    return slides
+
+
 #### tkinter setup ####
 
 
@@ -122,12 +143,7 @@ label = Label(frame)
 label.pack()
 
 # load the slide images
-slide_filenames = os.listdir(images_folder)
-slide_filenames.sort()
-slides = [PhotoImage(file=os.path.join(images_folder, f))
-          for f in slide_filenames]
-logger.info(f"loaded {len(slides)} slides")
-
+slides = today_slides()
 
 # load the black slide
 slide_black = PhotoImage(file='slide_black.png')
