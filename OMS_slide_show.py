@@ -9,7 +9,7 @@ import logging
 import logging.config
 
 # setup logging
-logging.config.fileConfig("logging.conf")
+logging.config.fileConfig("logging.ini")
 logger = logging.getLogger()
 logger.info("starting up")
 
@@ -127,7 +127,6 @@ slide_filenames.sort()
 slides = [PhotoImage(file=os.path.join(images_folder, f))
           for f in slide_filenames]
 logger.info(f"loaded {len(slides)} slides")
-
 
 # load the black slide
 slide_black = PhotoImage(file='slide_black.png')
