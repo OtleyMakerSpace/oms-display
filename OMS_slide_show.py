@@ -171,14 +171,10 @@ frame.pack(fill=BOTH, expand=1)
 label = Label(frame)
 label.pack()
 
-# load the slide images
-slides = today_slides()
-
-# load the black slide
-black_slide = PhotoImage(file='slide_black.png')
-
 #### main programme ####
 download_bank_holidays()
+slides = today_slides()
+black_slide = PhotoImage(file='slide_black.png')
 while True:
     during_the_day(slides)
     during_the_night(black_slide)
