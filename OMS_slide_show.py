@@ -7,6 +7,7 @@ from tkinter import *
 import configparser
 import logging
 import logging.config
+import json
 
 # setup logging
 logging.config.fileConfig("logging.ini")
@@ -104,10 +105,30 @@ def during_the_night(slide):
         time.sleep(1)
 
 
+def is_bank_holiday():
+    with open("bank-holidays.json") as file:
+        data = json.load(file)
+    bank_holidays = data["england-and-wales"]["events"]
+    today = datetime.datetime.today().strftime('%Y-%m-%d')
+    for holiday in bank_holidays:
+        if holiday["date"] == today:
+            title = holiday["title"]
+            logger.debug(f"today is a bank holiday: {title}")
+            return True
+    logger.debug("today is not a bank holiday")
+    return False
+
+
 def today_slides():
-    is_monday = datetime.datetime.now().weekday() == 0
+    is_monday = datetime.datetime.today().weekday() == 0
+    is_wms_day = False
     if is_monday:
-        # todo: check if it's a bank holiday
+        logger.debug("today is Monday")
+        if not is_bank_holiday():
+            is_wms_day = True
+    else:
+        logger.debug("today is not Monday")
+    if is_wms_day:
         logger.info("using the Wharfedale Men's Shed images")
         images_folder = wms_images_folder
     else:
