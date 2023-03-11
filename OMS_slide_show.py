@@ -8,6 +8,7 @@ import configparser
 import logging
 import logging.config
 import json
+import requests
 
 # setup logging
 logging.config.fileConfig("logging.ini")
@@ -143,6 +144,21 @@ def today_slides():
     return slides
 
 
+def download_bank_holidays():
+    logger.info("downloading bank holidays")
+    try:
+        response = requests.get("https://www.gov.uk/bank-holidays.json")
+    except:
+        logger.error("failed to download bank holidays")
+        return
+    logger.info(f"response code: {response.status_code}")
+    if response.status_code == 200:
+        logger.info("writing bank holidays to file")
+        with open("bank-holidays.json", "w") as file:
+            file.write(response.text)
+            file.close()
+
+
 # create the application window and makes it full screen
 root = Tk()
 root.attributes('-fullscreen', True)
@@ -162,6 +178,7 @@ slides = today_slides()
 black_slide = PhotoImage(file='slide_black.png')
 
 #### main programme ####
+download_bank_holidays()
 while True:
     during_the_day(slides)
     during_the_night(black_slide)
