@@ -30,8 +30,10 @@ end_hour = settings.getint("end-hour", 22)
 if end_hour < 0 or end_hour > 23:
     raise Exception("end hour must be in the range 0 to 23")
 logger.debug(f"end_hour = {end_hour}")
-images_folder = settings.get("images-folder")
-logger.debug(f"images_folder = {images_folder}")
+oms_images_folder = settings["oms-images-folder"]
+logger.debug(f"oms_images_folder = {oms_images_folder}")
+wms_images_folder = settings.get("wms-images-folder")
+logger.debug(f"wms_images_folder = {wms_images_folder}")
 
 
 # globals
@@ -56,9 +58,7 @@ def midnight():
 
 
 def show_slide(slide):
-    # changes the slide image in the label
     label.config(image=slide)
-    # updates tkinter
     root.update_idletasks()
     root.update()
 
@@ -67,7 +67,7 @@ def blank_display():
     if enable_blanking:
         global blanked
         if not blanked:
-            # blank the display
+            # todo: blank the display
             blanked = True
 
 
@@ -75,7 +75,7 @@ def show_display():
     if enable_blanking:
         global blanked
         if blanked:
-            # show the display
+            # todo: show the display
             blanked = False
 
 
@@ -95,15 +95,31 @@ def during_the_day(slides):
                 time.sleep(slide_time)
 
 
-def during_the_night():
-    show_slide(slide_black)
+def during_the_night(slide):
+    show_slide(slide)
     while night_time():
         blank_display()
         if midnight():
             reboot()
-        time.sleep(10)
+        time.sleep(1)
 
-#### tkinter setup ####
+
+def today_slides():
+    is_monday = datetime.datetime.now().weekday() == 0
+    if is_monday:
+        # todo: check if it's a bank holiday
+        logger.info("using the Wharfedale Men's Shed images")
+        images_folder = wms_images_folder
+    else:
+        logger.info("using the Otley Maker Space images")
+        images_folder = oms_images_folder
+    logger.info(f"images_folder = {images_folder}")
+    slide_filenames = os.listdir(images_folder)
+    slide_filenames.sort()
+    slides = [PhotoImage(file=os.path.join(images_folder, f))
+              for f in slide_filenames]
+    logger.info(f"loaded {len(slides)} slides")
+    return slides
 
 
 # create the application window and makes it full screen
@@ -122,16 +138,12 @@ label = Label(frame)
 label.pack()
 
 # load the slide images
-slide_filenames = os.listdir(images_folder)
-slide_filenames.sort()
-slides = [PhotoImage(file=os.path.join(images_folder, f))
-          for f in slide_filenames]
-logger.info(f"loaded {len(slides)} slides")
+slides = today_slides()
 
 # load the black slide
-slide_black = PhotoImage(file='slide_black.png')
+black_slide = PhotoImage(file='slide_black.png')
 
 #### main programme ####
 while True:
     during_the_day(slides)
-    during_the_night()
+    during_the_night(black_slide)
