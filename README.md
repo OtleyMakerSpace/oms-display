@@ -4,6 +4,8 @@ Displays a slide show of images during the day. Blanks the screen at night.
 
 Displays [Wharfedale Men's Shed](https://www.wharfedalemensshed.org.uk/hedgehog.html) images on Mondays (except bank holidays), Otley Maker Space images on other days.
 
+Downloads the bank holidays from https://www.gov.uk/bank-holidays
+
 The slide show runs on a Raspberry Pi, which reboots at midnight.
 
 ---
