@@ -147,9 +147,6 @@ def today_slides():
 root = Tk()
 root.attributes('-fullscreen', True)
 
-# setup escape key to quit the program
-root.bind("<Escape>", lambda event: root.destroy())
-
 # create a frame
 frame = Frame(root)
 frame.pack(fill=BOTH, expand=1)
