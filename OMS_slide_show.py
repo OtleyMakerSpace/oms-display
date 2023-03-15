@@ -69,7 +69,9 @@ def blank_display():
     if enable_blanking:
         global blanked
         if not blanked:
-            # todo: blank the display
+            logger.debug("disabling the screen")
+            os.system("xset -display :0 dpms force off")
+            os.system("tvservice -o >/dev/null")
             blanked = True
 
 
@@ -77,7 +79,9 @@ def show_display():
     if enable_blanking:
         global blanked
         if blanked:
-            # todo: show the display
+            logger.debug("enabling the screen")
+            os.system("tvservice -p >/dev/null")
+            os.system("xset -display :0 dpms force on")
             blanked = False
 
 
