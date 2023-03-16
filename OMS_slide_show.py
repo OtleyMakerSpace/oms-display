@@ -153,7 +153,7 @@ def download_bank_holidays():
     try:
         response = requests.get("https://www.gov.uk/bank-holidays.json")
     except:
-        logger.error("failed to download bank holidays")
+        logger.exception("failed to download bank holidays")
         return
     logger.info(f"response code: {response.status_code}")
     if response.status_code == 200:
