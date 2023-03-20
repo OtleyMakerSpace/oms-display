@@ -96,8 +96,8 @@ def during_the_day(slides):
     while day_time():
         for slide in slides:
             if day_time():
-                show_display()
                 show_slide(slide)
+                show_display()
                 time.sleep(slide_time)
 
 
