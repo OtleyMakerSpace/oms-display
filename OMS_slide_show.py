@@ -70,8 +70,11 @@ def blank_display():
         global blanked
         if not blanked:
             logger.debug("disabling the screen")
+            time.sleep(1)
             os.system("xset -display :0 dpms force off")
+            time.sleep(1)
             os.system("tvservice -o >/dev/null")
+            time.sleep(1)
             blanked = True
 
 
@@ -80,8 +83,11 @@ def show_display():
         global blanked
         if blanked:
             logger.debug("enabling the screen")
+            time.sleep(1)
             os.system("tvservice -p >/dev/null")
+            time.sleep(1)
             os.system("xset -display :0 dpms force on")
+            time.sleep(1)
             blanked = False
 
 
