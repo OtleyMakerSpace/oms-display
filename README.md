@@ -6,7 +6,7 @@ Displays [Wharfedale Men's Shed](https://www.wharfedalemensshed.org.uk/hedgehog.
 
 Downloads the bank holidays from https://www.gov.uk/bank-holidays
 
-The slide show runs on a Raspberry Pi, which reboots at midnight.
+The slide show runs on a Raspberry Pi, which reboots at the end of the night.
 
 ---
 
