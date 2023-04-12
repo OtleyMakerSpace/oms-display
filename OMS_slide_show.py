@@ -38,10 +38,6 @@ wms_images_folder = settings.get("wms-images-folder")
 logger.debug(f"wms_images_folder = {wms_images_folder}")
 
 
-# globals
-blanked = False
-
-
 def day_time():
     hour = datetime.datetime.now().hour
     if start_hour < end_hour:
@@ -53,12 +49,6 @@ def night_time():
     return not day_time()
 
 
-def midnight():
-    hour = datetime.datetime.now().hour
-    min = datetime.datetime.now().minute
-    return hour == 0 and min == 0
-
-
 def show_slide(slide):
     label.config(image=slide)
     root.update_idletasks()
@@ -67,25 +57,11 @@ def show_slide(slide):
 
 def blank_display():
     if enable_blanking:
-        global blanked
-        if not blanked:
-            logger.debug("disabling the screen")
-            os.system("./screen-off.sh")
-            blanked = True
-
-
-def show_display():
-    if enable_blanking:
-        global blanked
-        if blanked:
-            logger.debug("enabling the screen")
-            os.system("./screen-on.sh")
-            blanked = False
+        logger.debug("disabling the screen")
+        os.system("./screen-off.sh")
 
 
 def reboot():
-    logger.info("rebooting soon")
-    time.sleep(60)
     logger.info("rebooting")
     os.system('sudo reboot')
 
@@ -95,17 +71,13 @@ def during_the_day(slides):
         for slide in slides:
             if day_time():
                 show_slide(slide)
-                show_display()
                 time.sleep(slide_time)
 
 
 def during_the_night(slide):
     show_slide(slide)
     while night_time():
-        blank_display()
-        if midnight():
-            reboot()
-        time.sleep(1)
+        time.sleep(10)
 
 
 def is_bank_holiday():
@@ -177,6 +149,11 @@ label.pack()
 download_bank_holidays()
 slides = today_slides()
 black_slide = PhotoImage(file='slide_black.png')
-while True:
-    during_the_day(slides)
-    during_the_night(black_slide)
+# show the slides during the day
+during_the_day(slides)
+# blank screen at the end of the day
+blank_display()
+# show a black screen during the night
+during_the_night(black_slide)
+# reboot at the end of the night
+reboot()
