@@ -12,7 +12,7 @@ The slide show runs on a Raspberry Pi, which reboots at the end of the night.
 
 Hostname: `display-pi`
 
-GitHub repository: https://github.com/DavidFrankland/oms-display
+GitHub repository: https://github.com/OtleyMakerSpace/oms-display
 
 ## Startup
 
