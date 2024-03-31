@@ -1,4 +1,3 @@
 #!/bin/bash
 
-tvservice -o
-xset -display :0 -dpms
+xset -display :0 dpms force off
