@@ -16,7 +16,7 @@ logger = logging.getLogger()
 logger.info("starting up")
 
 # read settings from config file
-logger.info("reading config settngs")
+logger.info("reading config settings")
 config = configparser.ConfigParser()
 config.read("settings.ini")
 settings = config["settings"]
