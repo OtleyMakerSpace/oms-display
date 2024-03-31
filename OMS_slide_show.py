@@ -32,6 +32,8 @@ end_hour = settings.getint("end-hour", 22)
 if end_hour < 0 or end_hour > 23:
     raise Exception("end hour must be in the range 0 to 23")
 logger.debug(f"end_hour = {end_hour}")
+handle_bank_holidays = settings.getboolean("handle-bank-holidays", True)
+logger.debug(f"handle_bank_holidays = {handle_bank_holidays}")
 oms_images_folder = settings["oms-images-folder"]
 logger.debug(f"oms_images_folder = {oms_images_folder}")
 wms_images_folder = settings.get("wms-images-folder")
@@ -98,9 +100,14 @@ def today_slides():
     is_monday = datetime.datetime.today().weekday() == 0
     is_wms_day = False
     if is_monday:
+        is_wms_day = True
         logger.debug("today is Monday")
-        if not is_bank_holiday():
-            is_wms_day = True
+        if handle_bank_holidays:
+            logger.debug("checking bank holidays")
+            if is_bank_holiday():
+                is_wms_day = False
+        else:
+            logger.debug("ignoring bank holidays")
     else:
         logger.debug("today is not Monday")
     if is_wms_day:
@@ -146,7 +153,8 @@ label = Label(frame)
 label.pack()
 
 #### main programme ####
-download_bank_holidays()
+if handle_bank_holidays:
+    download_bank_holidays()
 slides = today_slides()
 black_slide = PhotoImage(file='slide_black.png')
 # show the slides during the day
