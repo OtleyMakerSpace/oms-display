@@ -2,7 +2,7 @@
 
 Displays a slide show of images during the day. Blanks the screen at night.
 
-Displays [Wharfedale Men's Shed](https://www.wharfedalemensshed.org.uk/hedgehog.html) images on Mondays (except bank holidays (configurable)), Otley Maker Space images on other days.
+Displays [Wharfedale Men's Shed](https://wharfedalemensshed.org.uk/) images on Mondays (except bank holidays (configurable)), Otley Maker Space images on other days.
 
 Downloads the bank holidays from https://www.gov.uk/bank-holidays
 
@@ -18,7 +18,7 @@ GitHub repository: https://github.com/OtleyMakerSpace/oms-display
 
 in file `~/.config/autostart/oms-display.desktop`
 
-```
+```ini
 [Desktop Entry]
 Type=Application
 Name=oms-display
@@ -29,7 +29,7 @@ Exec=/home/pi/oms-display.sh
 
 Settings are stored in the file `~/oms-display/settings.ini`. An example looks like:
 
-```
+```ini
 [settings]
 enable-blanking = true
 slide-time = 10
