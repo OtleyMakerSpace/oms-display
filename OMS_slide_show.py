@@ -1,14 +1,16 @@
 #!/usr/bin/env python
 
+import glhelper
+
 import os
 import time
 import datetime
-from tkinter import *
 import configparser
 import logging
 import logging.config
 import json
 import requests
+
 
 # setup logging
 logging.config.fileConfig("logging.ini")
@@ -24,6 +26,8 @@ enable_blanking = settings.getboolean("enable-blanking", True)
 logger.debug(f"enable_blanking = {enable_blanking}")
 slide_time = settings.getint("slide-time", 10)
 logger.debug(f"slide_time = {slide_time}")
+transition_time = settings.getfloat("transition-time", 2)
+logger.debug(f"transition_time = {transition_time}")
 start_hour = settings.getint("start-hour", 8)
 if start_hour < 0 or start_hour > 23:
     raise Exception("start hour must be in the range 0 to 23")
@@ -39,6 +43,9 @@ logger.debug(f"oms_images_folder = {oms_images_folder}")
 wms_images_folder = settings.get("wms-images-folder")
 logger.debug(f"wms_images_folder = {wms_images_folder}")
 
+# setup GL helper for displaying images / transitions
+gl_helper = glhelper.GlHelper()
+
 
 def day_time():
     hour = datetime.datetime.now().hour
@@ -49,12 +56,6 @@ def day_time():
 
 def night_time():
     return not day_time()
-
-
-def show_slide(slide):
-    label.config(image=slide)
-    root.update_idletasks()
-    root.update()
 
 
 def blank_display():
@@ -68,16 +69,26 @@ def reboot():
     os.system('sudo reboot')
 
 
-def during_the_day(slides):
+def during_the_day(images: list[str], transitions: list[str]):
+    image_index: int = 0
+    trans_index: int = 0
     while day_time():
-        for slide in slides:
-            if day_time():
-                show_slide(slide)
-                time.sleep(slide_time)
+        if len(images) == 1:
+            image = images[0]
+            logger.debug(f"showing the only image: {image}")
+            gl_helper.show_image(image)
+        else:
+            from_image = images[image_index]
+            image_index = (image_index + 1) % len(images)
+            to_image = images[image_index]
+            transition = transitions[trans_index]
+            trans_index = (trans_index + 1) % len(transitions)
+            gl_helper.transition_images(from_image, to_image, transition, transition_time)
+        time.sleep(slide_time)
 
 
-def during_the_night(slide):
-    show_slide(slide)
+def during_the_night(night_slide):
+    gl_helper.show_image(night_slide)
     while night_time():
         time.sleep(10)
 
@@ -96,7 +107,7 @@ def is_bank_holiday():
     return False
 
 
-def today_slides():
+def today_slides() -> list[str]:
     is_monday = datetime.datetime.today().weekday() == 0
     is_wms_day = False
     if is_monday:
@@ -117,12 +128,11 @@ def today_slides():
         logger.info("using the Otley Maker Space images")
         images_folder = oms_images_folder
     logger.info(f"images_folder = {images_folder}")
-    slide_filenames = os.listdir(images_folder)
-    slide_filenames.sort()
-    slides = [PhotoImage(file=os.path.join(images_folder, f))
-              for f in slide_filenames]
-    logger.info(f"loaded {len(slides)} slides")
-    return slides
+    img_exts = ('.jpg', '.jpeg', '.png', '.bmp', '.tiff', '.gif')
+    slide_filenames = [f for f in os.listdir(images_folder) if f.lower().endswith(img_exts)]
+    logger.info(f"loaded {len(slide_filenames)} slides")
+    slide_pathnames = [os.path.join(images_folder, f) for f in sorted(slide_filenames)]
+    return slide_pathnames
 
 
 def download_bank_holidays():
@@ -140,28 +150,35 @@ def download_bank_holidays():
             file.close()
 
 
-# create the application window and makes it full screen
-root = Tk()
-root.attributes('-fullscreen', True)
+def get_transitions(folder: str) -> list[str]:
+    files = [f for f in os.listdir(folder) if f.lower().endswith('.glsl')]
+    if len(files) == 0:
+        raise ValueError(f"no fragment .glsl transitions found in folder: {folder}")
+    return [os.path.join(folder, f) for f in sorted(files)]
 
-# create a frame
-frame = Frame(root)
-frame.pack(fill=BOTH, expand=1)
-
-# create a label for slides to be in
-label = Label(frame)
-label.pack()
 
 #### main programme ####
 if handle_bank_holidays:
     download_bank_holidays()
+
+# get list of images for today
 slides = today_slides()
-black_slide = PhotoImage(file='slide_black.png')
+
+# get list of transitions
+transitions = get_transitions("transitions")
+
+# a black screen
+black_slide = 'slide_black.png'
+
 # show the slides during the day
-during_the_day(slides)
+during_the_day(slides, transitions)
+
+
 # blank screen at the end of the day
-blank_display()
+# blank_display()
+
 # show a black screen during the night
 during_the_night(black_slide)
+
 # reboot at the end of the night
-reboot()
+# reboot()
