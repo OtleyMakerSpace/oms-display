@@ -2,9 +2,12 @@
 
 Displays a slide show of images during the day. Blanks the screen at night.
 
+Uses [GL Transitions](https://gl-transitions.com/) for nice transition effects between images. Available GL Transitions gallery is [here](https://gl-transitions.com/gallery)
+
+
 Displays [Wharfedale Men's Shed](https://wharfedalemensshed.org.uk/) images on Mondays (except bank holidays (configurable)), Otley Maker Space images on other days.
 
-Downloads the bank holidays from https://www.gov.uk/bank-holidays
+Downloads the bank holidays from https://www.gov.uk/bank-holidays if needed.
 
 The slide show runs on a Raspberry Pi, which reboots at the end of the night.
 
@@ -66,7 +69,5 @@ Document:
 - image file format (1680x1050, PGM, PPM, GIF, PNG format)
 
 Investigate:
-- DPMI blanking ([see here](https://raspberrypi.stackexchange.com/questions/59898/how-can-i-blank-the-screen-from-the-command-line-over-ssh))
 - samba share (need to be able to refresh the images)
-- animation effects ([GL Transitions](https://gl-transitions.com/)?)
 - intelligent resize/zoom
