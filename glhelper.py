@@ -63,7 +63,7 @@ def draw_transition(window, program, tex1, tex2, progress):
 
 class GlHelper:
 
-    def __init__(self):
+    def __init__(self, images_paths: list[str]):
         self.logger = logging.getLogger()
         source_folder = "source"
         if not os.path.isdir(source_folder):
@@ -102,14 +102,20 @@ class GlHelper:
         glBindBuffer(GL_ARRAY_BUFFER, glGenBuffers(1))
         glBufferData(GL_ARRAY_BUFFER, quad.nbytes, quad, GL_STATIC_DRAW)
 
+        # preload the textures
+        self.textures_dict = dict()
+        for p in images_paths:
+            self.logger.debug(f'preloading {p}')
+            self.textures_dict[p] = load_texture(p)
+
     def show_image(self, image_path: str) -> None:
         self.logger.debug(f"displaying image: {image_path}")
         self.transition_images(image_path, image_path, self.static_path, 1)
 
     def transition_images(self, image1_path: str, image2_path: str, transition_path: str, duration: float) -> None:
         self.logger.debug(f"transitioning from {image1_path} to {image2_path} using {transition_path}")
-        tex1 = load_texture(image1_path)
-        tex2 = load_texture(image2_path)
+        tex1 = self.textures_dict[image1_path]
+        tex2 = self.textures_dict[image2_path]
         fragment_src: str = load_shader_source(transition_path)
         fragment_src = self.header_src + fragment_src + self.footer_src
         program = create_program(self.vertex_src, fragment_src)

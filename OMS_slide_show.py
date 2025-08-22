@@ -43,9 +43,6 @@ logger.debug(f"oms_images_folder = {oms_images_folder}")
 wms_images_folder = settings.get("wms-images-folder")
 logger.debug(f"wms_images_folder = {wms_images_folder}")
 
-# setup GL helper for displaying images / transitions
-gl_helper = glhelper.GlHelper()
-
 
 def day_time():
     hour = datetime.datetime.now().hour
@@ -162,6 +159,9 @@ if handle_bank_holidays:
 
 # get list of images for today
 slides = today_slides()
+
+# setup GL helper for displaying images / transitions
+gl_helper = glhelper.GlHelper(slides)
 
 # get list of transitions
 transitions = get_transitions("transitions")
