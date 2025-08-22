@@ -158,6 +158,7 @@ def get_transitions(folder: str) -> list[str]:
 
 
 #### main programme ####
+black_image = 'slide_black.png'
 while True:
     if handle_bank_holidays:
         download_bank_holidays()
@@ -166,6 +167,8 @@ while True:
     slides = today_slides()
 
     # setup GL helper for displaying images / transitions
+    preload_images = list(slides)
+    preload_images.append(black_image)
     gl_helper = GlHelper(slides)
 
     # get list of transitions
@@ -175,7 +178,7 @@ while True:
     during_the_day(slides, transitions)
 
     # show a black screen during the night
-    during_the_night('slide_black.png')
+    during_the_night(black_image)
 
     # reboot at the end of the night
     if enable_reboot:
