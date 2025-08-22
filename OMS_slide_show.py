@@ -164,7 +164,7 @@ slides = today_slides()
 gl_helper = glhelper.GlHelper(slides)
 
 # get list of transitions
-transitions = get_transitions("transitions")
+transitions = get_transitions("transitions-test")
 
 # show the slides during the day
 during_the_day(slides, transitions)
