@@ -70,21 +70,23 @@ def reboot():
 
 
 def during_the_day(images: list[str], transitions: list[str]):
-    image_index: int = 0
-    trans_index: int = 0
-    while day_time():
-        if len(images) == 1:
-            image = images[0]
-            logger.debug(f"showing the only image: {image}")
-            gl_helper.show_image(image)
-        else:
+    if len(images) == 1:
+        image = images[0]
+        logger.debug(f"showing the only image: {image}")
+        gl_helper.show_image(image)
+        while day_time():
+            time.sleep(10)
+    else:
+        image_index: int = 0
+        trans_index: int = 0
+        while day_time():
             from_image = images[image_index]
             image_index = (image_index + 1) % len(images)
             to_image = images[image_index]
             transition = transitions[trans_index]
             trans_index = (trans_index + 1) % len(transitions)
             gl_helper.transition_images(from_image, to_image, transition, transition_time)
-        time.sleep(slide_time)
+            time.sleep(slide_time)
 
 
 def during_the_night(night_slide):
@@ -173,9 +175,8 @@ black_slide = 'slide_black.png'
 # show the slides during the day
 during_the_day(slides, transitions)
 
-
 # blank screen at the end of the day
-# blank_display()
+blank_display()
 
 # show a black screen during the night
 during_the_night(black_slide)
