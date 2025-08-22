@@ -58,12 +58,6 @@ def night_time():
     return not day_time()
 
 
-def blank_display():
-    if enable_blanking:
-        logger.debug("disabling the screen")
-        os.system("./screen-off.sh")
-
-
 def reboot():
     logger.info("rebooting")
     os.system('sudo reboot')
@@ -91,6 +85,9 @@ def during_the_day(images: list[str], transitions: list[str]):
 
 def during_the_night(night_slide):
     gl_helper.show_image(night_slide)
+    if enable_blanking:
+        logger.debug("disabling the screen")
+        os.system("./screen-off.sh")
     while night_time():
         time.sleep(10)
 
@@ -169,17 +166,11 @@ slides = today_slides()
 # get list of transitions
 transitions = get_transitions("transitions")
 
-# a black screen
-black_slide = 'slide_black.png'
-
 # show the slides during the day
 during_the_day(slides, transitions)
 
-# blank screen at the end of the day
-blank_display()
-
 # show a black screen during the night
-during_the_night(black_slide)
+during_the_night('slide_black.png')
 
 # reboot at the end of the night
 # reboot()
