@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import glhelper
+from glhelper import GlHelper
 
 import os
 import time
@@ -10,7 +10,6 @@ import logging
 import logging.config
 import json
 import requests
-
 
 # setup logging
 logging.config.fileConfig("logging.ini")
@@ -36,6 +35,8 @@ end_hour = settings.getint("end-hour", 22)
 if end_hour < 0 or end_hour > 23:
     raise Exception("end hour must be in the range 0 to 23")
 logger.debug(f"end_hour = {end_hour}")
+enable_reboot = settings.getboolean("enable-reboot", True)
+logger.debug(f"enable_reboot = {enable_reboot}")
 handle_bank_holidays = settings.getboolean("handle-bank-holidays", True)
 logger.debug(f"handle_bank_holidays = {handle_bank_holidays}")
 oms_images_folder = settings["oms-images-folder"]
@@ -154,23 +155,25 @@ def get_transitions(folder: str) -> list[str]:
 
 
 #### main programme ####
-if handle_bank_holidays:
-    download_bank_holidays()
+while True:
+    if handle_bank_holidays:
+        download_bank_holidays()
 
-# get list of images for today
-slides = today_slides()
+    # get list of images for today
+    slides = today_slides()
 
-# setup GL helper for displaying images / transitions
-gl_helper = glhelper.GlHelper(slides)
+    # setup GL helper for displaying images / transitions
+    gl_helper = GlHelper(slides)
 
-# get list of transitions
-transitions = get_transitions("transitions")
+    # get list of transitions
+    transitions = get_transitions("transitions")
 
-# show the slides during the day
-during_the_day(slides, transitions)
+    # show the slides during the day
+    during_the_day(slides, transitions)
 
-# show a black screen during the night
-during_the_night('slide_black.png')
+    # show a black screen during the night
+    during_the_night('slide_black.png')
 
-# reboot at the end of the night
-# reboot()
+    # reboot at the end of the night
+    if enable_reboot:
+        reboot()
