@@ -169,7 +169,7 @@ while True:
     # setup GL helper for displaying images / transitions
     preload_images = list(slides)
     preload_images.append(black_image)
-    gl_helper = GlHelper(slides)
+    gl_helper = GlHelper(preload_images)
 
     # get list of transitions
     transitions = get_transitions("transitions")
