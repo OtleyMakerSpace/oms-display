@@ -62,6 +62,9 @@ def reboot():
 
 
 def during_the_day(images: list[str], transitions: list[str]):
+    if enable_blanking:
+        logger.debug("enabling the screen")
+        os.system("./screen-on.sh")
     if len(images) == 1:
         image = images[0]
         logger.debug(f"showing the only image: {image}")
@@ -82,10 +85,10 @@ def during_the_day(images: list[str], transitions: list[str]):
 
 
 def during_the_night(night_slide):
-    gl_helper.show_image(night_slide)
     if enable_blanking:
         logger.debug("disabling the screen")
         os.system("./screen-off.sh")
+    gl_helper.show_image(night_slide)
     while night_time():
         time.sleep(10)
 
