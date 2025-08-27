@@ -78,11 +78,10 @@ class GlHelper:
 
         if not glfw.init():
             raise Exception("glfw can not be initialized")
-
         self.monitor = glfw.get_primary_monitor()
         self.mode = glfw.get_video_mode(self.monitor)
-        self.window = glfw.create_window(self.mode.size.width, self.mode.size.height,
-                                         "Fullscreen Window", self.monitor, None)
+        glfw.window_hint(glfw.AUTO_ICONIFY, glfw.FALSE)
+        self.window = glfw.create_window(self.mode.size.width, self.mode.size.height, "Slideshow", self.monitor, None)
         if not self.window:
             glfw.terminate()
             raise Exception("glfw window can not be created")
