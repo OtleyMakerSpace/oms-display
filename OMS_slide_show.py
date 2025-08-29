@@ -22,27 +22,27 @@ config = configparser.ConfigParser()
 config.read("settings.ini")
 settings = config["settings"]
 enable_blanking = settings.getboolean("enable-blanking", True)
-logger.debug(f"enable_blanking = {enable_blanking}")
+logger.info(f"enable_blanking = {enable_blanking}")
 slide_time = settings.getint("slide-time", 10)
-logger.debug(f"slide_time = {slide_time}")
+logger.info(f"slide_time = {slide_time}")
 transition_time = settings.getfloat("transition-time", 2)
-logger.debug(f"transition_time = {transition_time}")
+logger.info(f"transition_time = {transition_time}")
 start_hour = settings.getint("start-hour", 8)
 if start_hour < 0 or start_hour > 23:
     raise Exception("start hour must be in the range 0 to 23")
-logger.debug(f"start_hour = {start_hour}")
+logger.info(f"start_hour = {start_hour}")
 end_hour = settings.getint("end-hour", 22)
 if end_hour < 0 or end_hour > 23:
     raise Exception("end hour must be in the range 0 to 23")
-logger.debug(f"end_hour = {end_hour}")
+logger.info(f"end_hour = {end_hour}")
 enable_reboot = settings.getboolean("enable-reboot", True)
-logger.debug(f"enable_reboot = {enable_reboot}")
+logger.info(f"enable_reboot = {enable_reboot}")
 handle_bank_holidays = settings.getboolean("handle-bank-holidays", True)
-logger.debug(f"handle_bank_holidays = {handle_bank_holidays}")
+logger.info(f"handle_bank_holidays = {handle_bank_holidays}")
 oms_images_folder = settings["oms-images-folder"]
-logger.debug(f"oms_images_folder = {oms_images_folder}")
+logger.info(f"oms_images_folder = {oms_images_folder}")
 wms_images_folder = settings.get("wms-images-folder")
-logger.debug(f"wms_images_folder = {wms_images_folder}")
+logger.info(f"wms_images_folder = {wms_images_folder}")
 
 
 def day_time():
