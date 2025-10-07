@@ -3,3 +3,4 @@ pillow
 PyOpenGL
 glfw
 requests
+paho-mqtt
