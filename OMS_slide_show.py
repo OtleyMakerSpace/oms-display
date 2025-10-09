@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from glhelper import GlHelper
+import mqtthelper
 
 import os
 import time
@@ -20,6 +21,8 @@ logger.info("starting up")
 logger.info("reading config settings")
 config = configparser.ConfigParser()
 config.read("settings.ini")
+
+# global settings
 settings = config["settings"]
 enable_blanking = settings.getboolean("enable-blanking", True)
 logger.info(f"enable_blanking = {enable_blanking}")
@@ -39,10 +42,17 @@ enable_reboot = settings.getboolean("enable-reboot", True)
 logger.info(f"enable_reboot = {enable_reboot}")
 handle_bank_holidays = settings.getboolean("handle-bank-holidays", True)
 logger.info(f"handle_bank_holidays = {handle_bank_holidays}")
-oms_images_folder = settings["oms-images-folder"]
+oms_images_folder = settings.get("oms-images-folder", "")
 logger.info(f"oms_images_folder = {oms_images_folder}")
-wms_images_folder = settings.get("wms-images-folder")
+wms_images_folder = settings.get("wms-images-folder", "")
 logger.info(f"wms_images_folder = {wms_images_folder}")
+
+# MQTT settings
+mqtt_settings = config["mqtt"]
+enable_mqtt = mqtt_settings.getboolean("enable", False)
+logger.info(f"enable_mqtt = {enable_mqtt}")
+mqtt_host = mqtt_settings.get("host", "localhost")
+logger.info(f"mqtt_host = {mqtt_host}")
 
 
 def day_time():
@@ -85,6 +95,7 @@ def during_the_day(images: list[str], transitions: list[str]):
 
 
 def during_the_night(night_slide):
+    mqtt_helper.off()
     if enable_blanking:
         logger.debug("disabling the screen")
         os.system("./screen-off.sh")
@@ -124,9 +135,11 @@ def today_slides() -> list[str]:
     if is_wms_day:
         logger.info("using the Wharfedale Men's Shed images")
         images_folder = wms_images_folder
+        mqtt_helper.theme('wms')
     else:
         logger.info("using the Otley Maker Space images")
         images_folder = oms_images_folder
+        mqtt_helper.theme('oms')
     logger.info(f"images_folder = {images_folder}")
     img_exts = ('.jpg', '.jpeg', '.png', '.bmp', '.tiff', '.gif')
     slide_filenames = [f for f in os.listdir(images_folder) if f.lower().endswith(img_exts)]
@@ -158,6 +171,7 @@ def get_transitions(folder: str) -> list[str]:
 
 
 #### main programme ####
+mqtt_helper = mqtthelper.get(enable_mqtt, mqtt_host)
 black_image = 'slide_black.png'
 while True:
     if handle_bank_holidays:
