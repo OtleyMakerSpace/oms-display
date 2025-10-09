@@ -9,6 +9,8 @@ Displays [Wharfedale Men's Shed](https://wharfedalemensshed.org.uk/) images on M
 
 Downloads the bank holidays from https://www.gov.uk/bank-holidays if needed.
 
+Optionally publishes MQTT messages which specify which set of daily images is being displayed. This is used to sync the RGB LED matrix display theme to this one.
+
 The slide show runs on a Raspberry Pi, which reboots at the end of the night.
 
 ---
@@ -43,7 +45,13 @@ enable-reboot = false
 handle-bank-holidays = false
 oms-images-folder = oms-images
 wms-images-folder = wms-images
+
+[mqtt]
+enable = true
+host = localhost
 ```
+
+The `[settings]` section contains global settings:
 
 **enable-blanking** (true/false): Whether to switch off the display during the blank period. If this is true, the display will enter a standby mode to save power.
 
@@ -64,6 +72,13 @@ It is possible to set the start hour later than the end hour if you would like a
 **oms-images-folder**: The folder where the Otley Maker Space images are stored. Ensure that only image files are in here. The images in this folder will be displayed in the order of their filenames (sorted alphabetically).
 
 **wms-images-folder**: The folder where the Wharfedale Men's Shed images are stored.
+
+The `[mqtt]` section contains MQTT-specific settings:
+
+**enable** (true/false): Whether to publish MQTT messages for updating the LED matrix display.
+
+**host**: The MQTT broker to use.
+
 
 ## To do
 
