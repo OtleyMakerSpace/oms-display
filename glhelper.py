@@ -85,6 +85,7 @@ class GlHelper:
         if not self.window:
             glfw.terminate()
             raise Exception("glfw window can not be created")
+        glfw.set_input_mode(self.window, glfw.CURSOR, glfw.CURSOR_HIDDEN)
         glfw.make_context_current(self.window)
         width, height = glfw.get_framebuffer_size(self.window)
         self.logger.debug(f"window size is {width}x{height}")
