@@ -69,6 +69,7 @@ def night_time():
 def reboot():
     logger.info("rebooting")
     os.system('sudo reboot')
+    exit()
 
 
 def during_the_day(images: list[str], transitions: list[str]):
