@@ -96,13 +96,13 @@ def during_the_day(images: list[str], transitions: list[str]):
 
 
 def during_the_night(night_slide):
-    mqtt_helper.off()
     if enable_blanking:
         logger.debug("disabling the screen")
         os.system("./screen-off.sh")
     gl_helper.show_image(night_slide)
     while night_time():
-        time.sleep(10)
+        mqtt_helper.off()
+        time.sleep(60)
 
 
 def is_bank_holiday():
