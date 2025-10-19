@@ -62,6 +62,10 @@ enable_mqtt = mqtt_settings.getboolean("enable", False)
 logger.info(f"enable_mqtt = {enable_mqtt}")
 mqtt_host = mqtt_settings.get("host", "localhost")
 logger.info(f"mqtt_host = {mqtt_host}")
+mqtt_qos = mqtt_settings.getint("qos", 0)
+if mqtt_qos < 0 or mqtt_qos > 2:
+    raise Exception("MQTT QoS must be in the range 0 to 2")
+logger.info(f"mqtt_qos = {mqtt_qos}")
 
 
 def day_time():
@@ -194,7 +198,7 @@ def get_transitions(folder: str) -> list[str]:
 
 
 #### main programme ####
-mqtt_helper = mqtthelper.get(enable_mqtt, mqtt_host)
+mqtt_helper = mqtthelper.get(enable_mqtt, mqtt_host, mqtt_qos)
 black_image = 'slide_black.png'
 while True:
     if handle_bank_holidays:

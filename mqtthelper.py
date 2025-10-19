@@ -25,21 +25,22 @@ class MqttHelper(ABC):
 
 class RealMqttHelper(MqttHelper):
 
-    def __init__(self, host: str):
+    def __init__(self, host: str, qos: int):
         super().__init__()
         self.host = host
+        self.qos = qos
 
     def theme(self, theme: str):
         try:
             self.logger.info(f"sending led-display/theme:{theme} to {self.host}")
-            paho.mqtt.publish.single('led-display/theme', theme, hostname=self.host)
+            paho.mqtt.publish.single('led-display/theme', theme, hostname=self.host, qos=self.qos)
         except:
             self.logger.error('failed to publish led-display/theme message')
 
     def off(self):
         try:
             self.logger.info(f"sending led-display/off to {self.host}")
-            paho.mqtt.publish.single('led-display/off', hostname=self.host)
+            paho.mqtt.publish.single('led-display/off', hostname=self.host, qos=self.qos)
         except:
             self.logger.error('failed to publish led-display/off message')
 
@@ -56,8 +57,8 @@ class FakeMqttHelper(MqttHelper):
         self.logger.debug('switch display off')
 
 
-def get(enabled: bool, host: str) -> MqttHelper:
+def get(enabled: bool, host: str, qos: int) -> MqttHelper:
     if enabled:
-        return RealMqttHelper(host)
+        return RealMqttHelper(host, qos)
     else:
         return FakeMqttHelper()
