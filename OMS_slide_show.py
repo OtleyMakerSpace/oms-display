@@ -42,10 +42,14 @@ enable_reboot = settings.getboolean("enable-reboot", True)
 logger.info(f"enable_reboot = {enable_reboot}")
 handle_bank_holidays = settings.getboolean("handle-bank-holidays", True)
 logger.info(f"handle_bank_holidays = {handle_bank_holidays}")
-oms_images_folder = settings.get("oms-images-folder", "")
-logger.info(f"oms_images_folder = {oms_images_folder}")
-wms_images_folder = settings.get("wms-images-folder", "")
-logger.info(f"wms_images_folder = {wms_images_folder}")
+images_folder = settings.get("images-folder", "")
+logger.info(f"images_folder = {images_folder}")
+override_theme = settings.get("override-theme", "")
+logger.info(f"override_theme = {override_theme}")
+oms_theme = settings.get("oms-theme", "")
+logger.info(f"oms_theme = {oms_theme}")
+wms_theme = settings.get("wms-theme", "")
+logger.info(f"wms_theme = {wms_theme}")
 
 # MQTT settings
 mqtt_settings = config["mqtt"]
@@ -119,33 +123,39 @@ def is_bank_holiday():
     return False
 
 
-def today_slides() -> list[str]:
-    is_monday = datetime.datetime.today().weekday() == 0
-    is_wms_day = False
-    if is_monday:
-        is_wms_day = True
-        logger.debug("today is Monday")
-        if handle_bank_holidays:
-            logger.debug("checking bank holidays")
-            if is_bank_holiday():
-                is_wms_day = False
+def today_theme() -> str:
+    if override_theme != '':
+        logger.debug(f"using the override theme: {override_theme}")
+        return override_theme
+    else:
+        is_monday = datetime.datetime.today().weekday() == 0
+        is_wms_day = False
+        if is_monday:
+            is_wms_day = True
+            logger.debug("today is Monday")
+            if handle_bank_holidays:
+                logger.debug("checking bank holidays")
+                if is_bank_holiday():
+                    is_wms_day = False
+            else:
+                logger.debug("ignoring bank holidays")
         else:
-            logger.debug("ignoring bank holidays")
-    else:
-        logger.debug("today is not Monday")
-    if is_wms_day:
-        logger.info("using the Wharfedale Men's Shed images")
-        images_folder = wms_images_folder
-        mqtt_helper.theme('wms')
-    else:
-        logger.info("using the Otley Maker Space images")
-        images_folder = oms_images_folder
-        mqtt_helper.theme('oms')
-    logger.info(f"images_folder = {images_folder}")
+            logger.debug("today is not Monday")
+        if is_wms_day:
+            logger.info("using the Wharfedale Men's Shed theme")
+            return wms_theme
+        else:
+            logger.info("using the Otley Maker Space theme")
+            return oms_theme
+
+
+def today_slides(theme: str) -> list[str]:
+    theme_images_folder = os.path.join(images_folder, theme)
+    logger.info(f"theme_images_folder = {theme_images_folder}")
     img_exts = ('.jpg', '.jpeg', '.png', '.bmp', '.tiff', '.gif')
-    slide_filenames = [f for f in os.listdir(images_folder) if f.lower().endswith(img_exts)]
+    slide_filenames = [f for f in os.listdir(theme_images_folder) if f.lower().endswith(img_exts)]
     logger.info(f"loaded {len(slide_filenames)} slides")
-    slide_pathnames = [os.path.join(images_folder, f) for f in sorted(slide_filenames)]
+    slide_pathnames = [os.path.join(theme_images_folder, f) for f in sorted(slide_filenames)]
     return slide_pathnames
 
 
@@ -178,8 +188,14 @@ while True:
     if handle_bank_holidays:
         download_bank_holidays()
 
+    # get the theme for today
+    theme = today_theme()
+
+    # update the LED display
+    mqtt_helper.theme(theme)
+
     # get list of images for today
-    slides = today_slides()
+    slides = today_slides(theme)
 
     # setup GL helper for displaying images / transitions
     preload_images = list(slides)
