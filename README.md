@@ -4,12 +4,15 @@ Displays a slide show of images during the day. Blanks the screen at night.
 
 Uses [GL Transitions](https://gl-transitions.com/) for nice transition effects between images. Available GL Transitions gallery is [here](https://gl-transitions.com/gallery)
 
+On Mondays (except bank holidays (configurable)), displays [Wharfedale Men's Shed](https://wharfedalemensshed.org.uk/) images.
 
-Displays [Wharfedale Men's Shed](https://wharfedalemensshed.org.uk/) images on Mondays (except bank holidays (configurable)), Otley Maker Space images on other days.
+On the last Sunday of the month (can be disabled), displays [Repair Café](https://www.repaircafe.org/en/cafe/leeds-repair-cafe-network/) images.
+
+Displays Otley Maker Space images on other days.
 
 Downloads the bank holidays from https://www.gov.uk/bank-holidays if needed.
 
-Optionally publishes MQTT messages which specify which set of daily images is being displayed. This is used to sync the RGB LED matrix display theme to this one.
+Optionally publishes MQTT messages which specify which "theme" is being used. This is used to sync the RGB LED matrix display theme to this one.
 
 The slide show runs on a Raspberry Pi, which reboots at the end of the night.
 
@@ -27,7 +30,7 @@ in file `~/.config/autostart/oms-display.desktop`
 [Desktop Entry]
 Type=Application
 Name=oms-display
-Exec=/home/pi/oms-display.sh
+Exec=/home/pi/oms-display/start.sh
 ```
 
 ## Configuration
@@ -43,8 +46,12 @@ start-hour = 8
 end-hour = 22
 enable-reboot = false
 handle-bank-holidays = false
-oms-images-folder = oms-images
-wms-images-folder = wms-images
+enable-repair-cafe = true
+images-folder = images
+override-theme = 
+oms-theme = oms
+wms-theme = wms
+repair-cafe-theme = repair-cafe
 
 [mqtt]
 enable = true
@@ -69,9 +76,17 @@ It is possible to set the start hour later than the end hour if you would like a
 
 **handle-bank-holidays** (true/false): Whether to account for bank holidays on Mondays. If this is true, Mondays are treated as Wharfedale Men's Shed days only if it is not a bank holiday. If false, all Mondays are Wharfedale Men's Shed days.
 
-**oms-images-folder**: The folder where the Otley Maker Space images are stored. Ensure that only image files are in here. The images in this folder will be displayed in the order of their filenames (sorted alphabetically).
+**enable-repair-cafe** : Whether to show the Repair Café images on the last Sunday of the month. Set this to false if we are not doing a Repair Café this month.
 
-**wms-images-folder**: The folder where the Wharfedale Men's Shed images are stored.
+**images-folder**: The base folder where the images are stored. Contains subfolders for the various image themes.
+
+**override-theme**: Use this to override the daily theme for testing porposes. Leave blank for normal functionality.
+
+**oms-theme**: The theme and subfolder name for Otley Maker Space images.
+
+**wms-theme**: The theme and subfolder name for Wharfedale Men's Shed images.
+
+**repair-cafe-theme**: The theme and subfolder name for Repair Café images.
 
 The `[mqtt]` section contains MQTT-specific settings:
 
