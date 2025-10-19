@@ -50,6 +50,11 @@ oms_theme = settings.get("oms-theme", "")
 logger.info(f"oms_theme = {oms_theme}")
 wms_theme = settings.get("wms-theme", "")
 logger.info(f"wms_theme = {wms_theme}")
+repair_cafe_theme = settings.get("repair-cafe-theme", "")
+logger.info(f"repair_cafe_theme = {repair_cafe_theme}")
+enable_repair_cafe = settings.getboolean("enable-repair-cafe", True)
+logger.info(f"enable_repair_cafe = {enable_repair_cafe}")
+
 
 # MQTT settings
 mqtt_settings = config["mqtt"]
@@ -128,7 +133,14 @@ def today_theme() -> str:
         logger.debug(f"using the override theme: {override_theme}")
         return override_theme
     else:
-        is_monday = datetime.datetime.today().weekday() == 0
+        today = datetime.datetime.today()
+        is_monday = today.weekday() == 0
+        is_sunday = today.weekday() == 6
+        if enable_repair_cafe and is_sunday:
+            next_sunday = today + datetime.timedelta(days=7)
+            if next_sunday.month > today.month:
+                logger.info("using the Repair Café theme")
+                return repair_cafe_theme
         is_wms_day = False
         if is_monday:
             is_wms_day = True
